@@ -71,6 +71,9 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Usa la porta di Render (obbligatorio!)
+const port = process.env.PORT || 3000;  // Render imposta PORT (	ES.10000), fallback 3000 per test locali
+
 app.listen(port, () => {
   console.log(`Dynamic Price Backend avviato su porta ${port}`);
   console.log(`Prezzo corrente: €${getCurrentPrice()}`);
