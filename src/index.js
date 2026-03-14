@@ -5,11 +5,11 @@ import { getCurrentPrice, updatePrice } from './priceManager.js';
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;  // ← SOLO QUI, non duplicare!
 
 app.use(express.json());
 
-// Middleware autenticazione admin (per endpoint di update)
+// Middleware autenticazione admin
 const authenticateAdmin = (req, res, next) => {
   const apiKey = req.headers['x-admin-key'] || req.query.adminKey;
   
@@ -22,10 +22,10 @@ const authenticateAdmin = (req, res, next) => {
   next();
 };
 
-// Endpoint pubblico: Chainlink Functions lo chiama qui
+// Endpoint pubblico per Chainlink Functions
 app.get('/api/price', (req, res) => {
   const price = getCurrentPrice();
-  const scaled = Math.round(price * 100); // ×100 → es. 50.00 → 5000
+  const scaled = Math.round(price * 100);
 
   res.json({
     success: true,
@@ -37,7 +37,7 @@ app.get('/api/price', (req, res) => {
   });
 });
 
-// Endpoint admin: aggiorna il prezzo (protetto)
+// Endpoint admin: aggiorna prezzo
 app.post('/api/admin/update-price', authenticateAdmin, async (req, res) => {
   try {
     const { price } = req.body;
@@ -71,9 +71,7 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Usa la porta di Render (obbligatorio!)
-const port = process.env.PORT || 3000;  // Render imposta PORT (	ES.10000), fallback 3000 per test locali
-
+// Avvio server
 app.listen(port, () => {
   console.log(`Dynamic Price Backend avviato su porta ${port}`);
   console.log(`Prezzo corrente: €${getCurrentPrice()}`);
